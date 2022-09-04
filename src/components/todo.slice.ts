@@ -1,17 +1,19 @@
 import { IAppDispatch, IRootStore } from './../redux/store'
 import { ITodo, ITodoResponse } from '../interfaces/ITodo.interface'
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { AnyAction, createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-interface ITodoSlice {
+export interface ITodoSlice {
     todos: ITodo[]
     loading: boolean
     error: boolean
+    filter: 'active' | 'completed' | 'all'
 }
 
 const initialState: ITodoSlice = {
     todos: [] as ITodo[],
     loading: false,
     error: false,
+    filter: 'all',
 }
 
 const todoSlice = createSlice({
@@ -32,46 +34,36 @@ const todoSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
-        builder.addCase(fetchTodosAsync.pending, (state) => {
-            state.loading = true
-            state.error = false
-        })
-        builder.addCase(fetchTodosAsync.fulfilled, (state, action) => {
-            state.loading = false
-            state.error = false
+        builder
+            .addCase(fetchTodosAsync.pending, (state) => {
+                state.loading = true
+                state.error = false
+            })
+            .addCase(fetchTodosAsync.fulfilled, (state, action) => {
+                state.loading = false
+                state.error = false
 
-            if (!action.payload) {
-                throw new Error('server error')
-            } else {
-                state.todos = action.payload
-            }
-        })
-        builder.addCase(fetchTodosAsync.rejected, (state, action) => {
-            state.loading = false
-            state.error = true
-            console.error(action.payload)
-        })
-        builder.addCase(deleteTodoAsync.rejected, (state, action) => {
-            state.loading = false
-            state.error = true
-            console.error(action.payload)
-        })
-        builder.addCase(toggleTodoAsync.rejected, (state, action) => {
-            state.loading = false
-            state.error = true
-            console.error(action.payload)
-        })
-        // addTodo
-        builder.addCase(addTodoAsync.fulfilled, (state, action) => {
-            state.loading = false
-            state.error = false
-            action.payload && state.todos.push(action.payload)
-        })
-        builder.addCase(addTodoAsync.rejected, (state, action) => {
-            state.loading = false
-            state.error = true
-            console.error(action.payload)
-        })
+                if (!action.payload) {
+                    throw new Error('server error')
+                } else {
+                    state.todos = action.payload
+                }
+            })
+            // addTodo
+            .addCase(addTodoAsync.fulfilled, (state, action) => {
+                state.loading = false
+                state.error = false
+                action.payload && state.todos.push(action.payload)
+            })
+            /*  .addCase(addTodoAsync.rejected, (state, action) => {
+                state.loading = false
+                state.error = true
+                console.error(action.payload)
+            }) */
+            .addMatcher(isError, (state /* , _action: PayloadAction<string> */) => {
+                state.loading = false
+                state.error = true
+            })
     },
 })
 
@@ -163,3 +155,10 @@ export const addTodoAsync = createAsyncThunk<ITodo | undefined, string, { reject
         return data as ITodo
     },
 )
+
+// Predicats
+// return true or false
+
+const isError = (action: AnyAction) => {
+    return action.type.endsWith('rejected')
+}
