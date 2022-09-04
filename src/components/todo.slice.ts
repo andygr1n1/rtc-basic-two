@@ -1,6 +1,6 @@
-import { IRootStore } from './../redux/store'
+import { IAppDispatch, IRootStore } from './../redux/store'
 import { ITodo, ITodoResponse } from '../interfaces/ITodo.interface'
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface ITodoSlice {
     todos: ITodo[]
@@ -18,13 +18,13 @@ const todoSlice = createSlice({
     name: 'todos',
     initialState,
     reducers: {
-        addTodo(state, action) {
+        addTodo(state, action: PayloadAction<ITodo>) {
             state.todos.push(action.payload)
         },
-        removeTodo(state, action) {
+        removeTodo(state, action: PayloadAction<string>) {
             state.todos = state.todos.filter((todo) => todo.id !== action.payload)
         },
-        toggleTodoCompleted(state, action) {
+        toggleTodoCompleted(state, action: PayloadAction<string>) {
             const updatingTodo = state.todos.find((todo) => todo.id === action.payload)
             if (!updatingTodo) return
 
@@ -61,6 +61,12 @@ const todoSlice = createSlice({
             state.error = true
             console.error(action.payload)
         })
+        // addTodo
+        builder.addCase(addTodoAsync.fulfilled, (state, action) => {
+            state.loading = false
+            state.error = false
+            action.payload && state.todos.push(action.payload)
+        })
         builder.addCase(addTodoAsync.rejected, (state, action) => {
             state.loading = false
             state.error = true
@@ -77,70 +83,62 @@ export const todoReducer = todoSlice.reducer
 // ASYNC THUNK
 // ASYNC THUNK
 
-export const fetchTodosAsync = createAsyncThunk('todos/fetchTodos', async (_, { rejectWithValue }) => {
-    try {
+export const fetchTodosAsync = createAsyncThunk<ITodo[] | undefined, undefined, { rejectValue: string }>(
+    'todos/fetchTodos',
+    async (_, { rejectWithValue }) => {
         const response = await fetch(`${import.meta.env.VITE_TODOS}todos?_limit=20`)
 
         if (!response.ok) {
-            throw new Error('fetchTodos::: server error')
+            return rejectWithValue('fetchTodos::: server error')
         }
 
         const data: ITodoResponse[] | undefined = await response.json()
 
         return data?.map((todo) => ({ ...todo, id: todo.id.toString() }))
-    } catch (e) {
-        return rejectWithValue(e)
-    }
-})
+    },
+)
 
-export const deleteTodoAsync = createAsyncThunk(
+export const deleteTodoAsync = createAsyncThunk<void, string, { rejectValue: string; dispatch: IAppDispatch }>(
     'todos/deleteTodo',
     async (id: string, { rejectWithValue, dispatch }) => {
-        try {
-            const response = await fetch(`${import.meta.env.VITE_TODOS}todos/${id}`, {
-                method: 'DELETE',
-            })
+        const response = await fetch(`${import.meta.env.VITE_TODOS}todos/${id}`, {
+            method: 'DELETE',
+        })
 
-            if (!response.ok) {
-                throw new Error('deleteTodo::: server error')
-            }
-
-            dispatch(removeTodo(id))
-        } catch (e) {
-            return rejectWithValue(e)
+        if (!response.ok) {
+            return rejectWithValue('deleteTodo::: server error')
         }
+
+        dispatch(removeTodo(id))
     },
 )
 
-export const toggleTodoAsync = createAsyncThunk(
+export const toggleTodoAsync = createAsyncThunk<ITodo | undefined, string, { rejectValue: string; state: IRootStore }>(
     'todos/toggleTodoAsync',
     async (id: string, { rejectWithValue, dispatch, getState }) => {
-        const todo = (getState() as IRootStore).todo$.todos.find((todo) => todo.id === id)
-        try {
-            const response = await fetch(`${import.meta.env.VITE_TODOS}todos/${id}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    completed: !todo?.completed,
-                }),
-            })
+        const todo = getState().todo$.todos.find((todo) => todo.id === id)
 
-            if (!response.ok) {
-                throw new Error('toggleTodoAsync::: server error')
-            }
+        const response = await fetch(`${import.meta.env.VITE_TODOS}todos/${id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                completed: !todo?.completed,
+            }),
+        })
 
-            dispatch(toggleTodoCompleted(id))
-        } catch (e) {
-            return rejectWithValue(e)
+        if (!response.ok) {
+            return rejectWithValue('toggleTodoAsync::: server error')
         }
+
+        dispatch(toggleTodoCompleted(id))
     },
 )
 
-export const addTodoAsync = createAsyncThunk(
+export const addTodoAsync = createAsyncThunk<ITodo | undefined, string, { rejectValue: string }>(
     'todos/addTodoAsync',
-    async (title: string, { rejectWithValue, dispatch }) => {
+    async (title: string, { rejectWithValue }) => {
         if (!title.trim().length) return
 
         const newTodo = {
@@ -148,24 +146,20 @@ export const addTodoAsync = createAsyncThunk(
             title,
         }
 
-        try {
-            const response = await fetch(`${import.meta.env.VITE_TODOS}todos`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(newTodo),
-            })
+        const response = await fetch(`${import.meta.env.VITE_TODOS}todos`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newTodo),
+        })
 
-            if (!response.ok) {
-                throw new Error('addTodoAsync::: server error')
-            }
-
-            const data = await response.json()
-
-            dispatch(addTodo(data))
-        } catch (e) {
-            return rejectWithValue(e)
+        if (!response.ok) {
+            return rejectWithValue('addTodoAsync::: server error')
         }
+
+        const data = await response.json()
+
+        return data as ITodo
     },
 )
