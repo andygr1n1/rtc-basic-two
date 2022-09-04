@@ -15,9 +15,9 @@
 
         "moduleResolution": "node",
         "resolveJsonModule": true,
-        "isolatedModules": true,
+        "isolatedModules": false, //false for jest testing without export {}
         "noEmit": true,
-        "types": ["vite/client", "node"],
+        "types": ["vite/client", "node", "jest", "mocha"],
         "plugins": [{ "name": "typescript-plugin-css-modules" }]
     },
     "include": ["src/**/*"],

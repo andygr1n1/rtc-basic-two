@@ -16,3 +16,8 @@ rtk
 createAsyncThunk
 
 <https://www.youtube.com/watch?v=6RTbC8Acj1M>
+
+------------------------------------------------------------------------------------------------
+
+SETUP JEST:
+<https://hung.dev/posts/jest-vite>
