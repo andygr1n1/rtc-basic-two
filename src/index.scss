@@ -1,0 +1,42 @@
+@import 'normalize.css';
+@import 'material-icons/iconfont/material-icons.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply m-0 p-0;
+    }
+}
+
+@layer utilities {
+    button {
+        @apply focus:outline-none;
+    }
+
+    .border-solid {
+        border-style: solid;
+    }
+    .border-b-solid {
+        border-bottom-style: solid;
+    }
+}
+
+html,
+body {
+    @apply flex h-full w-full flex-col;
+}
+
+#root {
+    @apply flex w-full flex-auto;
+}
+
+.app {
+    @apply flex h-full w-full flex-col gap-10 bg-gray-200;
+}
