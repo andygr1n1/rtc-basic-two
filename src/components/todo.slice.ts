@@ -9,7 +9,7 @@ export interface ITodoSlice {
     filter: 'active' | 'completed' | 'all'
 }
 
-const initialState: ITodoSlice = {
+export const initialState: ITodoSlice = {
     todos: [] as ITodo[],
     loading: false,
     error: false,
@@ -20,9 +20,9 @@ const todoSlice = createSlice({
     name: 'todos',
     initialState,
     reducers: {
-        addTodo(state, action: PayloadAction<ITodo>) {
+        /*   addTodo(state, action: PayloadAction<ITodo>) {
             state.todos.push(action.payload)
-        },
+        }, */
         removeTodo(state, action: PayloadAction<string>) {
             state.todos = state.todos.filter((todo) => todo.id !== action.payload)
         },
@@ -67,7 +67,7 @@ const todoSlice = createSlice({
     },
 })
 
-export const { addTodo, removeTodo, toggleTodoCompleted } = todoSlice.actions
+export const { /* addTodo, */ removeTodo, toggleTodoCompleted } = todoSlice.actions
 
 export const todoReducer = todoSlice.reducer
 
@@ -159,6 +159,6 @@ export const addTodoAsync = createAsyncThunk<ITodo | undefined, string, { reject
 // Predicats
 // return true or false
 
-const isError = (action: AnyAction) => {
+export const isError = (action: AnyAction) => {
     return action.type.endsWith('rejected')
 }

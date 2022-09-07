@@ -1,0 +1,13 @@
+// Vitest Snapshot v1
+
+exports[`Todolist > should render Todo Item 1`] = `
+{
+  "then": [Function],
+}
+`;
+
+exports[`Todolist > should render Todo Item 2`] = `
+{
+  "then": [Function],
+}
+`;

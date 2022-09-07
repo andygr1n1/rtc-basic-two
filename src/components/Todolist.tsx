@@ -1,10 +1,9 @@
 import { useAppSelector } from '@/redux'
-import { getTodosByFilter } from '@/redux/selectors'
+import { TodoListSelector } from '@/redux/selectors'
 import { TodoItem } from './TodoItem'
 
 export const Todolist: React.FC = () => {
-    const todos = useAppSelector(getTodosByFilter)
-    const { error, loading } = useAppSelector((state) => state.todo$)
+    const { error, loading, todos } = useAppSelector(TodoListSelector)
 
     if (error) return <div>it seems to be, something happend on server</div>
 

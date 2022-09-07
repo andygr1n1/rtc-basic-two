@@ -19,5 +19,13 @@ createAsyncThunk
 
 ------------------------------------------------------------------------------------------------
 
-SETUP JEST:
-<https://hung.dev/posts/jest-vite>
+SETUP VITEST:
+<https://www.youtube.com/watch?v=7f-71kYhK00>
+<https://reactjs.org/docs/test-utils.html>
+<https://www.youtube.com/watch?v=mbBHW9Fz0Ys&list=PLiZoB8JBsdznQv3kAEvTzDP2qjaUI8Vo7&index=9>
+
+------------------------------------------------------------------------------------------------
+
+VITEST:
+
+<https://www.youtube.com/watch?v=mbBHW9Fz0Ys&list=PLiZoB8JBsdznQv3kAEvTzDP2qjaUI8Vo7&index=10>

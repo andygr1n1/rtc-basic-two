@@ -16,3 +16,7 @@ export const getTodosByFilter = createSelector(
         if (activeFilter === 'active') return allTodos.filter((todo) => !todo.completed)
     },
 )
+
+export const TodoListSelector = createSelector([getTodosByFilter, getTodo$], (getTodosByFilter, getTodo$) => {
+    return { todos: getTodosByFilter, error: getTodo$.error, loading: getTodo$.loading }
+})

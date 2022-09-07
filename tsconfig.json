@@ -17,10 +17,10 @@
         "resolveJsonModule": true,
         "isolatedModules": false, //false for jest testing without export {}
         "noEmit": true,
-        "types": ["vite/client", "node", "jest", "mocha"],
+        "types": ["vite/client", "node"],
         "plugins": [{ "name": "typescript-plugin-css-modules" }]
     },
-    "include": ["src/**/*"],
+    "include": ["src/**/*", "__tests__/App.test.tsx"],
     "exclude": ["node_modules"],
     "extends": "./tsconfig.paths.json", // 👈
     "references": [{ "path": "./tsconfig.node.json" }]

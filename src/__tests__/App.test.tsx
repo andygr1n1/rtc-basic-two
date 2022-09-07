@@ -1,8 +1,17 @@
-// import { render, screen } from '@testing-library/react'
+import { render, /* screen, */ act } from '@testing-library/react'
+import { describe, expect, it } from 'vitest'
+import { App } from '../App'
 
-describe('App', () => {
-    it('should work as expected', () => {
-        // render(<App />);
-        expect(1 + 1).toBe(2)
+describe('#sum', () => {
+    it('returns a sum', () => {
+        expect(1 + 2).toBe(3)
     })
 })
+
+// describe('#app', () => {
+//     it('App', () => {
+//         act(() => {
+//             render(<App />)
+//         })
+//     })
+// })
