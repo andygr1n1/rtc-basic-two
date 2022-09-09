@@ -28,4 +28,11 @@ SETUP VITEST:
 
 VITEST:
 
+test with mock
 <https://www.youtube.com/watch?v=mbBHW9Fz0Ys&list=PLiZoB8JBsdznQv3kAEvTzDP2qjaUI8Vo7&index=10>
+
+test async actions
+<https://www.youtube.com/watch?v=qb7xVPVfPlQ&list=PLiZoB8JBsdznQv3kAEvTzDP2qjaUI8Vo7&index=10>
+
+
+Unit test - testing the logic only of the component

@@ -52,6 +52,7 @@ describe('Todolist', () => {
         mockedAppDispatch.mockReturnValue(dispatch)
 
         const mockedToggleComplete = vitest.spyOn(actions, 'toggleTodoAsync')
+        const mockedRemoveTodo = vitest.spyOn(actions, 'deleteTodoAsync')
 
         act(() => {
             ReactDOM.createRoot(container).render(<TodoItem todo={todo} />)
@@ -63,5 +64,10 @@ describe('Todolist', () => {
         expect(dispatch).toHaveBeenCalledTimes(1)
         expect(mockedToggleComplete).toHaveBeenCalledTimes(1)
         expect(mockedToggleComplete).toBeCalledWith('8')
+
+        fireEvent.click(screen.getByTestId('remove-todo-button'))
+        expect(dispatch).toHaveBeenCalledTimes(2)
+        expect(mockedRemoveTodo).toHaveBeenCalledTimes(1)
+        expect(mockedRemoveTodo).toBeCalledWith('8')
     })
 })

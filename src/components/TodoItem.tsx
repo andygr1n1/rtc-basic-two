@@ -20,7 +20,12 @@ export const TodoItem: React.FC<{ todo: ITodo }> = ({ todo }) => {
             <input type='checkbox' checked={todo.completed} onChange={onChange} className='peer' />
             <div className='peer-checked:line-through'>{todo.title}</div>
 
-            <span onClick={onDelete} className='material-icons-round cursor-pointer hover:!text-red-500'>
+            <span
+                role='button'
+                data-testid='remove-todo-button'
+                onClick={onDelete}
+                className='material-icons-round cursor-pointer hover:!text-red-500'
+            >
                 delete
             </span>
         </li>
